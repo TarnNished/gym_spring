@@ -21,8 +21,4 @@ A **Spring-based** Gym Management System that allows **trainees**, **trainers**,
 - **Lombok** (for reducing boilerplate code)  
 - **Jackson** (for JSON processing)  
 
-## Installation & Setup 📦
-1. **Clone the repository**
-   ```sh
-   git clone https://github.com/YOUR_GITHUB_USERNAME/gym-management-system.git
-   cd gym-management-system
+
