@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.muro_akhaladze.gym_task.entity.Trainee;
 import com.muro_akhaladze.gym_task.entity.Trainer;
 import com.muro_akhaladze.gym_task.entity.Training;
-import com.muro_akhaladze.gym_task.entity.TrainingType;
 import com.muro_akhaladze.gym_task.service.TraineeService;
 import com.muro_akhaladze.gym_task.service.TrainerService;
 import com.muro_akhaladze.gym_task.service.TrainingService;
@@ -58,14 +57,13 @@ public class PreLoader {
                 log.info("Created Trainer: {}", savedTrainer.getUserName());
             }
             for (TrainingData trainingData : dataWrapper.getTrainings()) {
-                TrainingType  trainingType = new TrainingType(trainingData.getTrainingType());
                 Training savedTraining = trainingService.createTraining(
                         trainingData.getTraineeId(),
                         trainingData.getTrainerId(),
                         trainingData.getTrainingName(),
-                        trainingType,
                         trainingData.getTrainingDate(),
-                        Duration.ofMinutes(trainingData.getTrainingDurationMinutes())
+                        Duration.ofMinutes(trainingData.getTrainingDurationMinutes()),
+                        trainingData.getTrainingType()
                 );
                 log.info("Created Training: {}", savedTraining.getTrainingName());
 
