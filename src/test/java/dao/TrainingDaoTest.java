@@ -2,7 +2,6 @@ package dao;
 
 import com.muro_akhaladze.gym_task.dao.TrainingDao;
 import com.muro_akhaladze.gym_task.entity.Training;
-import com.muro_akhaladze.gym_task.entity.TrainingType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +28,10 @@ public class TrainingDaoTest {
                 1,
                 2,
                 "Deep Stretch Yoga",
-                new TrainingType("Yoga"),
+
                 "2023-08-15",
-                Duration.ofMinutes(60)
+                Duration.ofMinutes(60),
+                "Yoga"
         );
     }
 

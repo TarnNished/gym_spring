@@ -3,7 +3,6 @@ package facade;
 import com.muro_akhaladze.gym_task.entity.Trainee;
 import com.muro_akhaladze.gym_task.entity.Trainer;
 import com.muro_akhaladze.gym_task.entity.Training;
-import com.muro_akhaladze.gym_task.entity.TrainingType;
 import com.muro_akhaladze.gym_task.facade.Facade;
 import com.muro_akhaladze.gym_task.service.TraineeService;
 import com.muro_akhaladze.gym_task.service.TrainerService;
@@ -61,9 +60,10 @@ public class FacadeTest {
         training = new Training(1,
                 2,
                 "Strength Training",
-                new TrainingType("Strength"),
                 "2024-02-20",
-                Duration.ofMinutes(60));
+                Duration.ofMinutes(60),
+                "Strength"
+        );
     }
 
     @Test
@@ -88,12 +88,15 @@ public class FacadeTest {
 
     @Test
     void testCreateTraining_Success() {
-        when(trainingService.createTraining(anyInt(), anyInt(), anyString(), any(), anyString(), any())).thenReturn(training);
+        when(facade.createTraining(anyInt(), anyInt(), anyString(), anyString(), any(), anyString()))
+                .thenReturn(training);
 
-        Training createdTraining = facade.createTraining(1, 2, "Cardio Workout", training.getTrainingType(), "2024-03-10", Duration.ofMinutes(45));
+        Training result = facade.createTraining(1, 2, "Cardio", "2025-02-25", null, "Gym A");
 
-        assertNotNull(createdTraining);
-        verify(trainingService, times(1)).createTraining(anyInt(), anyInt(), anyString(), any(), anyString(), any());
+        assertNotNull(result);
+        assertEquals(training, result);
+
+        verify(trainingService, times(1)).createTraining(anyInt(), anyInt(), anyString(), anyString(), any(), anyString());
     }
 
     @Test

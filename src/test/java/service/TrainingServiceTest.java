@@ -2,7 +2,6 @@ package service;
 
 import com.muro_akhaladze.gym_task.dao.TrainingDao;
 import com.muro_akhaladze.gym_task.entity.Training;
-import com.muro_akhaladze.gym_task.entity.TrainingType;
 import com.muro_akhaladze.gym_task.service.TrainingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,9 +32,9 @@ public class TrainingServiceTest {
                 1,
                 2,
                 "Strength Training",
-                new TrainingType("Strength"),
                 "2024-02-20",
-                Duration.ofMinutes(60)
+                Duration.ofMinutes(60),
+                "Strength"
         );
     }
 
@@ -47,9 +46,9 @@ public class TrainingServiceTest {
                 training.getTraineeId(),
                 training.getTrainerId(),
                 training.getTrainingName(),
-                training.getTrainingType(),
                 training.getTrainingDate(),
-                training.getTrainingDuration()
+                training.getTrainingDuration(),
+                training.getTrainingType()
         );
 
         assertNotNull(createdTraining);
