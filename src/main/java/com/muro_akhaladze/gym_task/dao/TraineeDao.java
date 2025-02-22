@@ -15,19 +15,15 @@ public class TraineeDao {
     private final Map<Integer, Trainee> traineeStorage;
 
 
-    //creates trainee
     public Trainee createTrainee(Trainee trainee) {
-        // and save it in database(hashmap)
-        traineeStorage.put(trainee.getUserId(), trainee);
+       this.traineeStorage.put(trainee.getUserId(), trainee);
         return trainee;
     }
 
-    // deletes trainee by id
     public boolean deleteTrainee(int userId) {
         return traineeStorage.remove(userId) != null;
     }
 
-    // select function
     public Optional<Trainee> getTrainee(int userId) {
         return Optional.ofNullable(traineeStorage.get(userId))
                 .or(() -> {
@@ -37,8 +33,6 @@ public class TraineeDao {
     }
 
 
-
-    // updates trainee and check if such trainer already exist in database(hashmap)
     public Trainee updateTrainer(Trainee trainee) {
         if (!traineeStorage.containsKey(trainee.getUserId())) {
             log.warning("no trainer found");
@@ -47,4 +41,8 @@ public class TraineeDao {
         return trainee;
     }
 
+    public boolean existsByName(String username) {
+        return traineeStorage.values().stream()
+                .anyMatch(trainee -> trainee.getUserName().equalsIgnoreCase(username));
+    }
 }

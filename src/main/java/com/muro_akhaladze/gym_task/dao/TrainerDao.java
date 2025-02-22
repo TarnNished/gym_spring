@@ -14,13 +14,10 @@ import java.util.Optional;
 public class TrainerDao {
     private final Map<Integer, Trainer> trainerStorage;
 
-
-    // creates trainer
     public Trainer createTrainer(Trainer trainer) {
-        trainerStorage.put(trainer.getUserId(), trainer);
+        this.trainerStorage.put(trainer.getUserId(), trainer);
         return trainer;
     }
-    // select function
     public Optional<Trainer> getTrainer(int userId) {
         return Optional.ofNullable(trainerStorage.get(userId))
                 .or(() -> {
@@ -29,13 +26,16 @@ public class TrainerDao {
                 });
     }
 
-    // updates trainer and check if such trainer already exist in database(hashmap)
     public Trainer updateTrainer(Trainer trainer) {
         if (!trainerStorage.containsKey(trainer.getUserId())) {
             log.warning("no trainer found");
         }
         trainerStorage.put(trainer.getUserId(), trainer);
         return trainer;
+    }
+    public boolean existsByName(String username) {
+        return trainerStorage.values().stream()
+                .anyMatch(trainer -> trainer.getUserName().equalsIgnoreCase(username));
     }
 
 }

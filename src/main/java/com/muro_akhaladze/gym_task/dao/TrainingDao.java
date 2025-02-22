@@ -26,7 +26,7 @@ public class TrainingDao {
         trainingStorage.put(compositeKey, training);
         return training;
     }
-    // select function for training
+
     public Optional<Training> getTraining(int trainerId,int traineeId) {
         return Optional.ofNullable(trainingStorage.get(Pair.of(traineeId, trainerId)))
                 .or(() -> {
