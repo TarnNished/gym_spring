@@ -16,7 +16,7 @@ public class Training {
     private int traineeId;
     private int trainerId;
     private String trainingName;
-    private TrainingType trainingType;
     private String TrainingDate;
     private Duration TrainingDuration;
+    public String trainingType;
 }
