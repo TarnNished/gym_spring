@@ -1,41 +1,35 @@
 package com.muro_akhaladze.gym_task.service;
 
-import com.muro_akhaladze.gym_task.entity.Trainee;
-import com.muro_akhaladze.gym_task.entity.Trainer;
+import com.muro_akhaladze.gym_task.dao.TraineeDao;
+import com.muro_akhaladze.gym_task.dao.TrainerDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Log
 public class UserService {
-    private final Map<Integer, Trainer> trainerStorage;
-    private final Map<Integer, Trainee> traineeStorage;
+    private final TrainerDao trainerDao;
+    private final TraineeDao traineeDao;
 
     private static int traineeId = 1;
     private static int trainerId = 1;
 
     public boolean alreadyUsed(String username){
-        return this.traineeStorage.values().stream()
-                .anyMatch(t -> t.getUserName().equals(username)) ||
-                this.trainerStorage.values().stream()
-                        .anyMatch(t -> t.getUserName().equals(username));
-
+        return this.traineeDao.existsByName(username) || this.trainerDao.existsByName(username);
     }
     public String generateUserName(String firstName, String lastName) {
         String temp = firstName + "." + lastName;
+        String generated = temp;
         int i = 1;
 
-        while (alreadyUsed(temp)) {
-            temp = firstName + "." + lastName + i;
+        while (alreadyUsed(generated)) {
+            generated = temp + i;
             i++;
         }
-
-        return temp;
+        return generated;
     }
 
     public synchronized Integer getTrainerId() {

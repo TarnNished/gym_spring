@@ -19,12 +19,12 @@ public class TraineeService {
 
         public Trainee createTrainee(String firstName, String lastName, String address, String dob) {
         Trainee trainee = new Trainee();
-        // personal info
+
         trainee.setFirstName(firstName);
         trainee.setLastName(lastName);
         trainee.setAddress(address);
         trainee.setDateOfBirth(dob);
-        //username + password
+
         trainee.setUserId(userService.getTraineeId());
         trainee.setUserName(userService.generateUserName(firstName, lastName));
         trainee.setPassword(userService.generatePassword());

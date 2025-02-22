@@ -2,7 +2,6 @@ package com.muro_akhaladze.gym_task.service;
 
 import com.muro_akhaladze.gym_task.dao.TrainingDao;
 import com.muro_akhaladze.gym_task.entity.Training;
-import com.muro_akhaladze.gym_task.entity.TrainingType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
@@ -16,11 +15,10 @@ import java.util.Optional;
 public class TrainingService {
     private TrainingDao trainingDao;
 
-
-    public Training createTraining(int traineeId, int trainerId, String trainingName, TrainingType trainingTypeName,
-                                   String trainingDate, Duration trainingDuration) {
+    public Training createTraining(int traineeId, int trainerId, String trainingName,
+                                   String trainingDate, Duration trainingDuration,String trainingTypeName) {
         Training training = new Training(traineeId, trainerId,
-                trainingName, trainingTypeName, trainingDate, trainingDuration);
+                trainingName, trainingDate, trainingDuration, trainingTypeName);
         log.info("created Training");
         return trainingDao.createTraining(training);
     }

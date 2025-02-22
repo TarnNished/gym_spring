@@ -18,11 +18,11 @@ public class TrainerService {
 
     public Trainer createTrainer(String firstName, String lastName,String specialization) {
         Trainer trainer = new Trainer();
-        //personal info
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
         trainer.setSpecialization(specialization);
-        //username + password
+
+
         trainer.setUserId(userService.getTrainerId());
         trainer.setUserName(userService.generateUserName(firstName, lastName));
         trainer.setPassword(userService.generatePassword());
