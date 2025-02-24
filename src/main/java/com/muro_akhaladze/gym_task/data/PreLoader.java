@@ -39,25 +39,33 @@ public class PreLoader {
         try {
             File file = new File(dataFilePath);
             DataWrapper dataWrapper = objectMapper.readValue(file,DataWrapper.class);
-            for (Trainee trainee : dataWrapper.getTrainees()) {
-                Trainee savedTrainee = traineeService.createTrainee(
-                        trainee.getFirstName(),
-                        trainee.getLastName(),
-                        trainee.getAddress(),
-                        trainee.getDateOfBirth()
+            for (Trainee traineeData : dataWrapper.getTrainees()) {
+                Trainee trainee = new Trainee(
+                        traineeData.getFirstName(),
+                        traineeData.getLastName(),
+                        traineeData.getPassword(),
+                        traineeData.getUserName(),
+                        traineeData.getUserId(),
+                        traineeData.getDateOfBirth(),
+                        traineeData.getAddress()
                 );
+                Trainee savedTrainee = traineeService.createTrainee(trainee);
                 log.info("Created Trainee: {}", savedTrainee.getUserName());
             }
-            for (Trainer trainer : dataWrapper.getTrainers()) {
-                Trainer savedTrainer = trainerService.createTrainer(
-                        trainer.getFirstName(),
-                        trainer.getLastName(),
-                        trainer.getSpecialization()
+            for (Trainer trainerData : dataWrapper.getTrainers()) {
+                Trainer trainer = new Trainer(
+                        trainerData.getFirstName(),
+                        trainerData.getLastName(),
+                        trainerData.getUserName(),
+                        trainerData.getUserId(),
+                        trainerData.getPassword(),
+                        trainerData.getSpecialization()
                 );
+                Trainer savedTrainer = trainerService.createTrainer(trainer);
                 log.info("Created Trainer: {}", savedTrainer.getUserName());
             }
             for (TrainingData trainingData : dataWrapper.getTrainings()) {
-                Training savedTraining = trainingService.createTraining(
+                Training training = new Training(
                         trainingData.getTraineeId(),
                         trainingData.getTrainerId(),
                         trainingData.getTrainingName(),
@@ -65,6 +73,7 @@ public class PreLoader {
                         Duration.ofMinutes(trainingData.getTrainingDurationMinutes()),
                         trainingData.getTrainingType()
                 );
+                Training savedTraining = trainingService.createTraining(training);
                 log.info("Created Training: {}", savedTraining.getTrainingName());
 
             }

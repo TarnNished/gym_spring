@@ -13,12 +13,9 @@ import java.util.Optional;
 @Log
 @RequiredArgsConstructor
 public class TrainingService {
-    private TrainingDao trainingDao;
+    private final TrainingDao trainingDao;
 
-    public Training createTraining(int traineeId, int trainerId, String trainingName,
-                                   String trainingDate, Duration trainingDuration,String trainingTypeName) {
-        Training training = new Training(traineeId, trainerId,
-                trainingName, trainingDate, trainingDuration, trainingTypeName);
+    public Training createTraining(Training training) {
         log.info("created Training");
         return trainingDao.createTraining(training);
     }

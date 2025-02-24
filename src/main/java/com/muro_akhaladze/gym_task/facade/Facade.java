@@ -19,16 +19,14 @@ public class Facade {
     private final TrainerService trainerService;
     private final TrainingService trainingService;
 
-    public Trainee createTrainee(String firstName, String lastName, String address, String dob){
-        return traineeService.createTrainee(firstName, lastName, address, dob);
+    public Trainee createTrainee(Trainee trainee){
+        return traineeService.createTrainee(trainee);
     }
-    public Trainer createTrainer(String firstName, String lastName,String specialization){
-        return trainerService.createTrainer(firstName, lastName, specialization);
+    public Trainer createTrainer(Trainer trainer){
+        return trainerService.createTrainer(trainer);
     }
-    public Training createTraining(int traineeId, int trainerId, String trainingName,
-                                   String trainingDate, Duration trainingDuration, String trainingTypeName){
-        return trainingService.createTraining(traineeId, trainerId,
-                trainingName,  trainingDate, trainingDuration,trainingTypeName);
+    public Training createTraining(Training training){
+        return trainingService.createTraining(training);
     }
 
     public Optional<Trainee> getTrainee(int id) {

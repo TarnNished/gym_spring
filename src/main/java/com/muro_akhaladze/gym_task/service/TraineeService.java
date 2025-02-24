@@ -17,17 +17,12 @@ public class TraineeService {
     private final UserService userService;
     private final TraineeDao traineeDao;
 
-        public Trainee createTrainee(String firstName, String lastName, String address, String dob) {
-        Trainee trainee = new Trainee();
-
-        trainee.setFirstName(firstName);
-        trainee.setLastName(lastName);
-        trainee.setAddress(address);
-        trainee.setDateOfBirth(dob);
+        public Trainee createTrainee(Trainee trainee) {
 
         trainee.setUserId(userService.getTraineeId());
-        trainee.setUserName(userService.generateUserName(firstName, lastName));
+        trainee.setUserName(userService.generateUserName(trainee.getFirstName(), trainee.getLastName()));
         trainee.setPassword(userService.generatePassword());
+
         log.info("Creating new trainee: {}");
 
         return traineeDao.createTrainee(trainee);

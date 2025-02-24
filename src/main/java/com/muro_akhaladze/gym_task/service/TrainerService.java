@@ -16,15 +16,10 @@ public class TrainerService {
     private final TrainerDao trainerDao;
 
 
-    public Trainer createTrainer(String firstName, String lastName,String specialization) {
-        Trainer trainer = new Trainer();
-        trainer.setFirstName(firstName);
-        trainer.setLastName(lastName);
-        trainer.setSpecialization(specialization);
-
+    public Trainer createTrainer(Trainer trainer) {
 
         trainer.setUserId(userService.getTrainerId());
-        trainer.setUserName(userService.generateUserName(firstName, lastName));
+        trainer.setUserName(userService.generateUserName(trainer.getFirstName(), trainer.getLastName()));
         trainer.setPassword(userService.generatePassword());
 
         log.info("Create trainer");
