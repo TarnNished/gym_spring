@@ -45,13 +45,9 @@ public class TrainerServiceTest {
         when(userService.getTrainerId()).thenReturn(1);
         when(userService.generateUserName("Oliver", "Martinez")).thenReturn("Oliver.Martinez");
         when(userService.generatePassword()).thenReturn("securePass452");
-        when(trainerDao.createTrainer(any())).thenReturn(trainer);
+        when(trainerDao.createTrainer(any(Trainer.class))).thenReturn(trainer);
 
-        Trainer createdTrainer = trainerService.createTrainer(
-                trainer.getFirstName(),
-                trainer.getLastName(),
-                trainer.getSpecialization()
-        );
+        Trainer createdTrainer = trainerService.createTrainer(trainer);
 
         assertNotNull(createdTrainer);
         assertEquals(trainer.getFirstName(), createdTrainer.getFirstName());

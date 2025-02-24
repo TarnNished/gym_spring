@@ -68,35 +68,35 @@ public class FacadeTest {
 
     @Test
     void testCreateTrainee_Success() {
-        when(traineeService.createTrainee(anyString(), anyString(), anyString(), anyString())).thenReturn(trainee);
+        when(traineeService.createTrainee(any(Trainee.class))).thenReturn(trainee);
 
-        Trainee createdTrainee = facade.createTrainee("Liam", "Anderson", "123 Oak St", "1995-08-10");
+        Trainee createdTrainee = facade.createTrainee(trainee);
 
         assertNotNull(createdTrainee);
-        verify(traineeService, times(1)).createTrainee(anyString(), anyString(), anyString(), anyString());
+        verify(traineeService, times(1)).createTrainee(any(Trainee.class));
     }
 
     @Test
     void testCreateTrainer_Success() {
-        when(trainerService.createTrainer(anyString(), anyString(), anyString())).thenReturn(trainer);
+        when(trainerService.createTrainer(any(Trainer.class))).thenReturn(trainer);
 
-        Trainer createdTrainer = facade.createTrainer("Sophia", "Clark", "Pilates");
+        Trainer createdTrainer = facade.createTrainer(trainer);
 
         assertNotNull(createdTrainer);
-        verify(trainerService, times(1)).createTrainer(anyString(), anyString(), anyString());
+        verify(trainerService, times(1)).createTrainer(any(Trainer.class));
     }
 
     @Test
     void testCreateTraining_Success() {
-        when(facade.createTraining(anyInt(), anyInt(), anyString(), anyString(), any(), anyString()))
+        when(trainingService.createTraining(any(Training.class))).thenReturn(training)
                 .thenReturn(training);
 
-        Training result = facade.createTraining(1, 2, "Cardio", "2025-02-25", null, "Gym A");
+        Training result = facade.createTraining(training);
 
         assertNotNull(result);
         assertEquals(training, result);
 
-        verify(trainingService, times(1)).createTraining(anyInt(), anyInt(), anyString(), anyString(), any(), anyString());
+        verify(trainingService, times(1)).createTraining(any(Training.class));
     }
 
     @Test

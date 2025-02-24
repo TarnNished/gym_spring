@@ -46,14 +46,9 @@ public class TraineeServiceTest {
         when(userService.getTraineeId()).thenReturn(1);
         when(userService.generateUserName("Liam", "Anderson")).thenReturn("Liam.Anderson");
         when(userService.generatePassword()).thenReturn("securePass123");
-        when(traineeDao.createTrainee(any())).thenReturn(trainee);
+        when(traineeDao.createTrainee(any(Trainee.class))).thenReturn(trainee);
 
-        Trainee createdTrainee = traineeService.createTrainee(
-                trainee.getFirstName(),
-                trainee.getLastName(),
-                trainee.getAddress(),
-                trainee.getDateOfBirth()
-        );
+        Trainee createdTrainee = traineeService.createTrainee(trainee);
 
         assertNotNull(createdTrainee);
         assertEquals(trainee.getFirstName(), createdTrainee.getFirstName());

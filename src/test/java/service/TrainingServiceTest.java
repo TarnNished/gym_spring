@@ -40,16 +40,9 @@ public class TrainingServiceTest {
 
     @Test
     void testCreateTraining_Success() {
-        when(trainingDao.createTraining(any())).thenReturn(training);
+        when(trainingDao.createTraining(any(Training.class))).thenReturn(training);
 
-        Training createdTraining = trainingService.createTraining(
-                training.getTraineeId(),
-                training.getTrainerId(),
-                training.getTrainingName(),
-                training.getTrainingDate(),
-                training.getTrainingDuration(),
-                training.getTrainingType()
-        );
+        Training createdTraining = trainingService.createTraining(training);
 
         assertNotNull(createdTraining);
         assertEquals(training.getTrainingName(), createdTraining.getTrainingName());
