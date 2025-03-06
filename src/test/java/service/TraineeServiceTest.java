@@ -1,15 +1,16 @@
 package service;
 
-import com.muro_akhaladze.gym_task.dao.TraineeDao;
 import com.muro_akhaladze.gym_task.entity.Trainee;
+import com.muro_akhaladze.gym_task.entity.User;
+import com.muro_akhaladze.gym_task.repository.TraineeRepo;
 import com.muro_akhaladze.gym_task.service.TraineeService;
-import com.muro_akhaladze.gym_task.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,10 +19,7 @@ import static org.mockito.Mockito.*;
 public class TraineeServiceTest {
 
     @Mock
-    private TraineeDao traineeDao;
-
-    @Mock
-    private UserService userService;
+    private TraineeRepo traineeRepo;
 
     @InjectMocks
     private TraineeService traineeService;
@@ -31,80 +29,79 @@ public class TraineeServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        trainee = new Trainee();
-        trainee.setFirstName("Liam");
-        trainee.setLastName("Anderson");
-        trainee.setAddress("456 Elm Street");
-        trainee.setDateOfBirth("1998-07-15");
-        trainee.setUserId(1);
-        trainee.setUserName("Liam.Anderson");
-        trainee.setPassword("securePass123");
+
+        User user = new User(
+                1,
+                "Liam",
+                "Anderson",
+                "Liam.Anderson",
+                "securePass123",
+                true);
+
+        trainee = new Trainee(user, LocalDate.of(1998, 7, 15), "456 Elm Street");
     }
+
 
     @Test
     void testCreateTrainee_Success() {
-        when(userService.getTraineeId()).thenReturn(1);
-        when(userService.generateUserName("Liam", "Anderson")).thenReturn("Liam.Anderson");
-        when(userService.generatePassword()).thenReturn("securePass123");
-        when(traineeDao.createTrainee(any(Trainee.class))).thenReturn(trainee);
+        when(traineeRepo.save(any(Trainee.class))).thenReturn(trainee);
 
         Trainee createdTrainee = traineeService.createTrainee(trainee);
 
         assertNotNull(createdTrainee);
-        assertEquals(trainee.getFirstName(), createdTrainee.getFirstName());
-        assertEquals(trainee.getLastName(), createdTrainee.getLastName());
-        assertEquals(trainee.getAddress(), createdTrainee.getAddress());
-        assertEquals(trainee.getDateOfBirth(), createdTrainee.getDateOfBirth());
-        assertEquals("Liam.Anderson", createdTrainee.getUserName());
-        assertEquals("securePass123", createdTrainee.getPassword());
-
-        verify(userService, times(1)).getTraineeId();
-        verify(userService, times(1)).generateUserName("Liam", "Anderson");
-        verify(userService, times(1)).generatePassword();
-        verify(traineeDao, times(1)).createTrainee(any());
+        verify(traineeRepo, times(1)).save(any(Trainee.class));
     }
 
     @Test
-    void testGetTrainee_Found() {
-        when(traineeDao.getTrainee(trainee.getUserId())).thenReturn(Optional.of(trainee));
+    void testGetTraineeByUsername_Found() {
+        when(traineeRepo.findByUsername("Liam.Anderson")).thenReturn(Optional.of(trainee));
 
-        Optional<Trainee> retrievedTrainee = traineeService.getTrainee(trainee.getUserId());
+        Optional<Trainee> result = traineeService.getTraineeByUsername("Liam.Anderson");
 
-        assertTrue(retrievedTrainee.isPresent());
-        assertEquals(trainee.getFirstName(), retrievedTrainee.get().getFirstName());
-
-        verify(traineeDao, times(1)).getTrainee(trainee.getUserId());
+        assertTrue(result.isPresent());
+        assertEquals("Liam.Anderson", result.get().getUser().getUserName());
+        verify(traineeRepo, times(1)).findByUsername("Liam.Anderson");
     }
 
     @Test
-    void testGetTrainee_NotFound_ReturnsEmpty() {
-        when(traineeDao.getTrainee(100)).thenReturn(Optional.empty());
+    void testGetTraineeByUsername_NotFound() {
+        when(traineeRepo.findByUsername("UnknownUser")).thenReturn(Optional.empty());
 
-        Optional<Trainee> retrievedTrainee = traineeService.getTrainee(100);
+        Optional<Trainee> result = traineeService.getTraineeByUsername("UnknownUser");
 
-        assertTrue(retrievedTrainee.isEmpty());
-        verify(traineeDao, times(1)).getTrainee(100);
+        assertTrue(result.isEmpty());
+        verify(traineeRepo, times(1)).findByUsername("UnknownUser");
     }
 
     @Test
     void testUpdateTrainee_Success() {
-        when(traineeDao.updateTrainer(trainee)).thenReturn(trainee);
+        String username = "john_doe";
+        User user = new User();
+        user.setUserName(username);
+
+        Trainee trainee = new Trainee();
+        trainee.setUser(user);
+        trainee.setAddress("456 Elm Street");
+
+        when(traineeRepo.findByUsername(username)).thenReturn(Optional.of(trainee));
+        when(traineeRepo.save(any(Trainee.class))).thenReturn(trainee);
 
         Trainee updatedTrainee = traineeService.updateTrainee(trainee);
 
         assertNotNull(updatedTrainee);
-        assertEquals(trainee.getAddress(), updatedTrainee.getAddress());
+        assertEquals("456 Elm Street", updatedTrainee.getAddress());
 
-        verify(traineeDao, times(1)).updateTrainer(trainee);
+        verify(traineeRepo, times(1)).findByUsername(username);
+        verify(traineeRepo, times(1)).save(any(Trainee.class));
     }
+
 
     @Test
     void testDeleteTrainee_Success() {
-        when(traineeDao.deleteTrainee(trainee.getUserId())).thenReturn(true);
+        doNothing().when(traineeRepo).deleteByUsername(anyString());
 
-        boolean isDeleted = traineeService.deleteTrainee(trainee.getUserId());
+        traineeService.deleteTrainee("Liam.Anderson");
 
-        assertTrue(isDeleted);
-        verify(traineeDao, times(1)).deleteTrainee(trainee.getUserId());
+        verify(traineeRepo, times(1)).deleteByUsername("Liam.Anderson");
     }
 }
