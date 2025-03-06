@@ -2,9 +2,11 @@ package com.muro_akhaladze.gym_task.data;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.muro_akhaladze.gym_task.entity.Trainee;
 import com.muro_akhaladze.gym_task.entity.Trainer;
 import com.muro_akhaladze.gym_task.entity.Training;
+import com.muro_akhaladze.gym_task.entity.TrainingType;
 import com.muro_akhaladze.gym_task.service.TraineeService;
 import com.muro_akhaladze.gym_task.service.TrainerService;
 import com.muro_akhaladze.gym_task.service.TrainingService;
@@ -16,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -27,7 +29,6 @@ public class PreLoader {
     private final TrainingService trainingService;
     private final TrainerService trainerService;
     private final TraineeService traineeService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${data.storage}")
     private String dataFilePath;
@@ -38,40 +39,37 @@ public class PreLoader {
 
         try {
             File file = new File(dataFilePath);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
             DataWrapper dataWrapper = objectMapper.readValue(file,DataWrapper.class);
+
             for (Trainee traineeData : dataWrapper.getTrainees()) {
                 Trainee trainee = new Trainee(
-                        traineeData.getFirstName(),
-                        traineeData.getLastName(),
-                        traineeData.getPassword(),
-                        traineeData.getUserName(),
-                        traineeData.getUserId(),
+                        traineeData.getUser(),
                         traineeData.getDateOfBirth(),
                         traineeData.getAddress()
                 );
                 Trainee savedTrainee = traineeService.createTrainee(trainee);
-                log.info("Created Trainee: {}", savedTrainee.getUserName());
+                log.info("Created Trainee: {}", savedTrainee.getUser().getUserName());
             }
             for (Trainer trainerData : dataWrapper.getTrainers()) {
                 Trainer trainer = new Trainer(
-                        trainerData.getFirstName(),
-                        trainerData.getLastName(),
-                        trainerData.getUserName(),
-                        trainerData.getUserId(),
-                        trainerData.getPassword(),
+                        trainerData.getUser(),
                         trainerData.getSpecialization()
                 );
                 Trainer savedTrainer = trainerService.createTrainer(trainer);
-                log.info("Created Trainer: {}", savedTrainer.getUserName());
+                log.info("Created Trainer: {}", savedTrainer.getUser().getUserName());
             }
             for (TrainingData trainingData : dataWrapper.getTrainings()) {
                 Training training = new Training(
-                        trainingData.getTraineeId(),
-                        trainingData.getTrainerId(),
-                        trainingData.getTrainingName(),
+                        trainingData.getTrainingId(),
+                        trainingData.getTrainee(),
+                        trainingData.getTrainer(),
+                        trainingData.getTrainingType(),
+                        trainingData.getTrainingType().getTrainingTypeName(),
                         trainingData.getTrainingDate(),
-                        Duration.ofMinutes(trainingData.getTrainingDurationMinutes()),
-                        trainingData.getTrainingType()
+                        trainingData.getTrainingDurationMinutes()
+
                 );
                 Training savedTraining = trainingService.createTraining(training);
                 log.info("Created Training: {}", savedTraining.getTrainingName());
@@ -94,12 +92,13 @@ public class PreLoader {
 
     @Getter
     static class TrainingData {
-        private int traineeId;
-        private int trainerId;
+        private int trainingId;
+        private Trainee Trainee;
+        private Trainer Trainer;
         private String trainingName;
-        private String trainingType;
-        private String trainingDate;
-        private int trainingDurationMinutes;
+        private TrainingType trainingType;
+        private LocalDate trainingDate;
+        private Long trainingDurationMinutes;
     }
 
 }
